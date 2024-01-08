@@ -14,11 +14,11 @@ var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var OpenAI = require('openai');
-
 var SpotifyWebApi = require('spotify-web-api-node');
 // const spotifyApi = new SpotifyWebApi();
 
-// TODO: MOVE TO ENVIRONMENT VARIABLES, VERY UNSAFE
+const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
+
 const client_id = process.env.SPOTIFY_CLIENT_ID; // your clientId
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
 
@@ -37,7 +37,8 @@ var app = express();
 
 app.use(express.static(__dirname + '/public'))
    .use(cors())
-   .use(cookieParser());
+   .use(cookieParser())
+   .use(express.json());
 
 app.get('/login', function(req, res) {
 
@@ -147,24 +148,30 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
+// used a POST request because didn't want to expose artists in URL
+// and concerned about account data fiddling
+app.post('/roast', async function(req, res) {
+  // TODO:  implement try/catch so server doesn't just crash lmfao
+  console.log(req.body);
+  
+  let topArtists = req.body.topArtists;
+  let topArtistsStr = "{" + topArtists.join(", ") + "}";
+  console.log("generateRoast, topArtists:", topArtists);
+  console.log("generateRoast:",topArtistsStr);
+  
+  const completion = await openai.chat.completions.create({
+      messages: [
+          { role: "system", content: PROMPT },
+          { role: "user", content: topArtistsStr}
+      ],
+      model: "gpt-3.5-turbo",
+  });
 
-app.get('/roast', function(req, res) {
-    // TODO: 
+  res.send({
+    gpt_response: completion.choices[0]
+  })
 
-
-    // let topArtistsStr = "{" + topArtists.join(", ") + "}";
-    // console.log("generateRoast, topArtists:", topArtists);
-    // console.log("generateRoast:",topArtistsStr);
-    
-    // const completion = await openai.chat.completions.create({
-    //     messages: [
-    //         { role: "system", content: PROMPT },
-    //         { role: "user", content: topArtistsStr}
-    //     ],
-    //     model: "gpt-3.5-turbo",
-    // });
-
-    // console.log("GPT response:", completion.choices[0]);
+  // console.log("GPT response:", completion.choices[0]);
 });
 
 /**
