@@ -159,13 +159,16 @@ app.post('/roast', async function(req, res) {
   console.log("generateRoast, topArtists:", topArtists);
   console.log("generateRoast:",topArtistsStr);
   
+  console.log("sending to chatGPT...")
   const completion = await openai.chat.completions.create({
       messages: [
-          { role: "system", content: PROMPT },
+          { role: "system", content: process.env.PROMPT },
           { role: "user", content: topArtistsStr}
       ],
       model: "gpt-3.5-turbo",
   });
+  console.log("finished!")
+  console.log(completion.choices[0]);
 
   res.send({
     gpt_response: completion.choices[0]
