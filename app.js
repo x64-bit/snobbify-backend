@@ -13,16 +13,14 @@ var crypto = require('crypto');
 var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
+var OpenAI = require('openai');
 
-const SpotifyWebApi = require('spotify-web-api-node');
+var SpotifyWebApi = require('spotify-web-api-node');
 // const spotifyApi = new SpotifyWebApi();
 
 // TODO: MOVE TO ENVIRONMENT VARIABLES, VERY UNSAFE
-var client_id = process.env.SPOTIFY_CLIENT_ID; // your clientId
-var client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
-
-// var client_id = "6a8265b38a5f4cde8f00f1e9a0550461"; // your clientId
-// var client_secret = "6a8265b38a5f4cde8f00f1e9a0550461"; // Your secret
+const client_id = process.env.SPOTIFY_CLIENT_ID; // your clientId
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
 
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
@@ -149,6 +147,29 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
+
+app.get('/roast', function(req, res) {
+    // TODO: 
+
+
+    // let topArtistsStr = "{" + topArtists.join(", ") + "}";
+    // console.log("generateRoast, topArtists:", topArtists);
+    // console.log("generateRoast:",topArtistsStr);
+    
+    // const completion = await openai.chat.completions.create({
+    //     messages: [
+    //         { role: "system", content: PROMPT },
+    //         { role: "user", content: topArtistsStr}
+    //     ],
+    //     model: "gpt-3.5-turbo",
+    // });
+
+    // console.log("GPT response:", completion.choices[0]);
+});
+
+/**
+ * deprecated
+ */
 app.get('/getPlaying', async function(req, res) {
   const authHeader = req.header("Authorization");
   // console.log("Request:", req);
