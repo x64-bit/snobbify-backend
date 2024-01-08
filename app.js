@@ -148,9 +148,11 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
+// ROASTING ENDPOINTS ------------------------
+
 // used a POST request because didn't want to expose artists in URL
 // and concerned about account data fiddling
-app.post('/roast', async function(req, res) {
+app.post('/roastArtists', async function(req, res) {
   // TODO:  implement try/catch so server doesn't just crash lmfao
   console.log(req.body);
   
@@ -162,7 +164,7 @@ app.post('/roast', async function(req, res) {
   console.log("sending to chatGPT...")
   const completion = await openai.chat.completions.create({
       messages: [
-          { role: "system", content: process.env.PROMPT },
+          { role: "system", content: process.env.ARTISTS_PROMPT },
           { role: "user", content: topArtistsStr}
       ],
       model: "gpt-3.5-turbo",
@@ -175,6 +177,35 @@ app.post('/roast', async function(req, res) {
   })
 
   // console.log("GPT response:", completion.choices[0]);
+});
+
+// used a POST request because didn't want to expose artists in URL
+// and concerned about account data fiddling
+app.post('/roastTracks', async function(req, res) {
+  // TODO:  implement try/catch so server doesn't just crash lmfao
+  console.log(req.body);
+  
+  let topTracks = req.body
+  let topTracksStr = JSON.stringify(topTracks);
+  console.log("generateRoast, topArtists:", topTracks);
+  console.log("generateRoast:",topTracksStr);
+  
+  console.log("sending to chatGPT...")
+  const completion = await openai.chat.completions.create({
+      messages: [
+          { role: "system", content: process.env.TRACKS_PROMPT },
+          { role: "user", content: topTracksStr}
+      ],
+      model: "gpt-3.5-turbo",
+  });
+  console.log("finished!")
+  console.log(completion.choices[0]);
+
+  res.send({
+    gpt_response: completion.choices[0]
+  })
+
+  console.log("GPT response:", completion.choices[0]);
 });
 
 /**
