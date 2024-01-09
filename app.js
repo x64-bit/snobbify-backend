@@ -42,7 +42,7 @@ const redirect_uri = BACKEND_ROUTE + '/callback'; // Your redirect uri
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  httpAgent: new HttpsProxyAgent.HttpsProxyAgent(FRONTEND_ROUTE)});
+  httpAgent: new HttpsProxyAgent.HttpsProxyAgent(BACKEND_ROUTE)});
 
 const generateRandomString = (length) => {
   return crypto
@@ -210,20 +210,20 @@ app.post('/roastTracks', async function(req, res) {
   // console.log("generateRoast, topArtists:", topTracks);
   // console.log("generateRoast:",topTracksStr);
   
-  // console.log("sending to chatGPT...")
-  // const completion = await openai.chat.completions.create({
-  //     messages: [
-  //         { role: "system", content: process.env.TRACKS_PROMPT },
-  //         { role: "user", content: topTracksStr}
-  //     ],
-  //     model: "gpt-3.5-turbo",
-  // });
-  // console.log("finished!")
-  // console.log(completion.choices[0]);
+  console.log("sending to chatGPT...")
+  const completion = await openai.chat.completions.create({
+      messages: [
+          { role: "system", content: process.env.TRACKS_PROMPT },
+          { role: "user", content: topTracksStr}
+      ],
+      model: "gpt-3.5-turbo",
+  });
+  console.log("finished!")
+  console.log(completion.choices[0]);
 
   res.send({
-    // gpt_response: completion.choices[0]
-    gpt_response: {"message" : { "content" : topTracksStr}}
+    gpt_response: completion.choices[0]
+    // gpt_response: {"message" : { "content" : topTracksStr}}
   })
 
   // console.log("GPT response:", completion.choices[0]);
