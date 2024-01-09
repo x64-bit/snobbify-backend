@@ -15,7 +15,20 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var OpenAI = require('openai');
 var SpotifyWebApi = require('spotify-web-api-node');
-var HttpsProxyAgent = require('http-proxy-agent');
+var HttpsProxyAgent = require('https-proxy-agent');
+
+// import { HttpProxyAgent } from 'http-proxy-agent';
+
+// import express from 'express';
+// import request from 'request';
+// import crypto from 'crypto';
+// import cors from 'cors';
+// import querystring from 'querystring';
+// import cookieParser from 'cookie-parser';
+// import OpenAI from 'openai';
+// import SpotifyWebApi from 'spotify-web-api-node';
+// import HttpsProxyAgent from 'https-proxy-agent';
+
 // const spotifyApi = new SpotifyWebApi();
 
 const client_id = process.env.SPOTIFY_CLIENT_ID; // your clientId
@@ -26,9 +39,10 @@ const FRONTEND_ROUTE =  "https://snobbify.onrender.com";
 // const redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 const redirect_uri = BACKEND_ROUTE + '/callback'; // Your redirect uri
 
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  httpAgent: new HttpsProxyAgent(FRONTEND_ROUTE)});
+  httpAgent: new HttpsProxyAgent.HttpsProxyAgent(FRONTEND_ROUTE)});
 
 const generateRandomString = (length) => {
   return crypto
