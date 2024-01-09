@@ -154,14 +154,14 @@ app.get('/refresh_token', function(req, res) {
 // and concerned about account data fiddling
 app.post('/roastArtists', async function(req, res) {
   // TODO:  implement try/catch so server doesn't just crash lmfao
-  console.log(req.body);
+  // console.log(req.body);
   
   let topArtists = req.body.topArtists;
   let topArtistsStr = "{" + topArtists.join(", ") + "}";
-  console.log("generateRoast, topArtists:", topArtists);
-  console.log("generateRoast:",topArtistsStr);
+  // console.log("generateRoast, topArtists:", topArtists);
+  // console.log("generateRoast:",topArtistsStr);
   
-  console.log("sending to chatGPT...")
+  // console.log("sending to chatGPT...")
   const completion = await openai.chat.completions.create({
       messages: [
           { role: "system", content: process.env.ARTISTS_PROMPT },
@@ -169,8 +169,8 @@ app.post('/roastArtists', async function(req, res) {
       ],
       model: "gpt-3.5-turbo",
   });
-  console.log("finished!")
-  console.log(completion.choices[0]);
+  // console.log("finished!")
+  // console.log(completion.choices[0]);
 
   res.send({
     gpt_response: completion.choices[0]
@@ -183,14 +183,14 @@ app.post('/roastArtists', async function(req, res) {
 // and concerned about account data fiddling
 app.post('/roastTracks', async function(req, res) {
   // TODO:  implement try/catch so server doesn't just crash lmfao
-  console.log(req.body);
+  // console.log(req.body);
   
   let topTracks = req.body
   let topTracksStr = JSON.stringify(topTracks);
-  console.log("generateRoast, topArtists:", topTracks);
-  console.log("generateRoast:",topTracksStr);
+  // console.log("generateRoast, topArtists:", topTracks);
+  // console.log("generateRoast:",topTracksStr);
   
-  console.log("sending to chatGPT...")
+  // console.log("sending to chatGPT...")
   const completion = await openai.chat.completions.create({
       messages: [
           { role: "system", content: process.env.TRACKS_PROMPT },
@@ -198,14 +198,14 @@ app.post('/roastTracks', async function(req, res) {
       ],
       model: "gpt-3.5-turbo",
   });
-  console.log("finished!")
-  console.log(completion.choices[0]);
+  // console.log("finished!")
+  // console.log(completion.choices[0]);
 
   res.send({
     gpt_response: completion.choices[0]
   })
 
-  console.log("GPT response:", completion.choices[0]);
+  // console.log("GPT response:", completion.choices[0]);
 });
 
 /**
