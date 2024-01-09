@@ -15,9 +15,8 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var OpenAI = require('openai');
 var SpotifyWebApi = require('spotify-web-api-node');
+var HttpsProxyAgent = require('htt')
 // const spotifyApi = new SpotifyWebApi();
-
-const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
 const client_id = process.env.SPOTIFY_CLIENT_ID; // your clientId
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
@@ -26,6 +25,10 @@ const BACKEND_ROUTE = "https://snobbify-backend.onrender.com";
 const FRONTEND_ROUTE =  "https://snobbify.onrender.com";
 // const redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 const redirect_uri = BACKEND_ROUTE + '/callback'; // Your redirect uri
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  httpAgent: new HttpsProxyAgent(FRONTEND_ROUTE)});
 
 const generateRandomString = (length) => {
   return crypto
@@ -194,19 +197,19 @@ app.post('/roastTracks', async function(req, res) {
   // console.log("generateRoast:",topTracksStr);
   
   // console.log("sending to chatGPT...")
-  // const completion = await openai.chat.completions.create({
-  //     messages: [
-  //         { role: "system", content: process.env.TRACKS_PROMPT },
-  //         { role: "user", content: topTracksStr}
-  //     ],
-  //     model: "gpt-3.5-turbo",
-  // });
+  const completion = await openai.chat.completions.create({
+      messages: [
+          { role: "system", content: process.env.TRACKS_PROMPT },
+          { role: "user", content: topTracksStr}
+      ],
+      model: "gpt-3.5-turbo",
+  });
   // console.log("finished!")
   // console.log(completion.choices[0]);
 
   res.send({
-    // gpt_response: completion.choices[0]
-    gpt_response: "hello world"
+    gpt_response: completion.choices[0]
+    // gpt_response: "hello world"
   })
 
   // console.log("GPT response:", completion.choices[0]);
