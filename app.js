@@ -221,10 +221,10 @@ app.post('/roastTracks', async function(req, res) {
   console.log("finished!")
   console.log(completion.choices[0]);
 
-  res.send({
-    gpt_response: completion.choices[0]
-    // gpt_response: {"message" : { "content" : topTracksStr}}
-  })
+  // res.send({
+  //   gpt_response: completion.choices[0]
+  //   // gpt_response: {"message" : { "content" : topTracksStr}}
+  // })
 
   // console.log("GPT response:", completion.choices[0]);
 });
