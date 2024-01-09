@@ -42,7 +42,7 @@ const redirect_uri = BACKEND_ROUTE + '/callback'; // Your redirect uri
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  httpAgent: new HttpsProxyAgent.HttpsProxyAgent(BACKEND_ROUTE)});
+  httpAgent: new HttpsProxyAgent.HttpsProxyAgent(FRONTEND_ROUTE)});
 
 const generateRandomString = (length) => {
   return crypto
