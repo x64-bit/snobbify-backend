@@ -15,7 +15,7 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var OpenAI = require('openai');
 var SpotifyWebApi = require('spotify-web-api-node');
-var HttpsProxyAgent = require('htt')
+var HttpsProxyAgent = require('http-proxy-agent');
 // const spotifyApi = new SpotifyWebApi();
 
 const client_id = process.env.SPOTIFY_CLIENT_ID; // your clientId
