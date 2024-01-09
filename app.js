@@ -211,19 +211,19 @@ app.post('/roastTracks', async function(req, res) {
   // console.log("generateRoast:",topTracksStr);
   
   // console.log("sending to chatGPT...")
-  const completion = await openai.chat.completions.create({
-      messages: [
-          { role: "system", content: process.env.TRACKS_PROMPT },
-          { role: "user", content: topTracksStr}
-      ],
-      model: "gpt-3.5-turbo",
-  });
+  // const completion = await openai.chat.completions.create({
+  //     messages: [
+  //         { role: "system", content: process.env.TRACKS_PROMPT },
+  //         { role: "user", content: topTracksStr}
+  //     ],
+  //     model: "gpt-3.5-turbo",
+  // });
   // console.log("finished!")
   // console.log(completion.choices[0]);
 
   res.send({
-    gpt_response: completion.choices[0]
-    // gpt_response: "hello world"
+    // gpt_response: completion.choices[0]
+    gpt_response: {"message" : { "content" : topTracksStr}}
   })
 
   // console.log("GPT response:", completion.choices[0]);
