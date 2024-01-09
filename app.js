@@ -22,7 +22,10 @@ const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 const client_id = process.env.SPOTIFY_CLIENT_ID; // your clientId
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
 
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+const BACKEND_ROUTE = "https://snobbify-backend.onrender.com";
+const FRONTEND_ROUTE =  "https://snobbify.onrender.com";
+// const redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+const redirect_uri = BACKEND_ROUTE + '/callback'; // Your redirect uri
 
 const generateRandomString = (length) => {
   return crypto
@@ -105,13 +108,13 @@ app.get('/callback', function(req, res) {
         });
 
         // we can also pass the token to the browser to make requests from there
-        res.redirect('http://localhost:5173/#' +
+        res.redirect(FRONTEND_ROUTE + '/#' +
           querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token
           }));
       } else {
-        res.redirect('http://localhost:5173/#' +
+        res.redirect(FRONTEND_ROUTE + '/#' +
           querystring.stringify({
             error: 'invalid_token'
           }));

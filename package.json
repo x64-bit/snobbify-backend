@@ -20,5 +20,6 @@
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
-  }
+  },
+  "license": "(MIT OR Apache-2.0)"
 }
