@@ -213,6 +213,23 @@ app.post('/roastArtists', async function(req, res) {
   // console.log("GPT response:", completion.choices[0]);
 });
 
+app.post('/sample', async function(req, res) {
+  try {
+    const completion = await openai.chat.completions.create({
+      messages: [
+          { role: "system", content: process.env.TRACKS_PROMPT },
+          { role: "user", content: "{Aphex Twin}"}
+      ],
+      model: "gpt-3.5-turbo",
+    });
+    console.log(completion.choices[0]);
+
+    return res.status(200);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // used a POST request because didn't want to expose artists in URL
 // and concerned about account data fiddling
 app.post('/roastTracks', async function(req, res) {
