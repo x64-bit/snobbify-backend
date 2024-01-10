@@ -237,7 +237,7 @@ app.post('/roastTracks', async function(req, res) {
     // TODO:  implement try/catch so server doesn't just crash lmfao
     // console.log(req.body);
     
-    let { topTracks } = req.body
+    let topTracks = req.body
     let topTracksStr = JSON.stringify(topTracks);
     console.log("topTracks:", topTracks);
     console.log("topTrackStr:",topTracksStr);
