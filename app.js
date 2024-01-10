@@ -15,7 +15,8 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var OpenAI = require('openai');
 var SpotifyWebApi = require('spotify-web-api-node');
-var HttpsProxyAgent = require('https-proxy-agent');
+// var HttpsProxyAgent = require('https-proxy-agent');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // import { HttpProxyAgent } from 'http-proxy-agent';
 
@@ -39,10 +40,13 @@ const FRONTEND_ROUTE =  "https://snobbify.onrender.com";
 // const redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 const redirect_uri = BACKEND_ROUTE + '/callback'; // Your redirect uri
 
+const apiProxy = createProxyMiddleware({ target: 'https://api.openai.com/v1/chat/completions', changeOrigin: true  });
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  httpAgent: new HttpsProxyAgent.HttpsProxyAgent(FRONTEND_ROUTE)});
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+//   httpAgent: new HttpsProxyAgent.HttpsProxyAgent(FRONTEND_ROUTE)});
+
+const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
 const generateRandomString = (length) => {
   return crypto
@@ -59,6 +63,8 @@ app.use(express.static(__dirname + '/public'))
    .use(cors())
    .use(cookieParser())
    .use(express.json());
+
+app.use(['/roastArtists', '/roastTracks'], apiProxy)
 
 app.get('/login', function(req, res) {
 
