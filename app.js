@@ -72,7 +72,7 @@ app.use(express.static(__dirname + '/public'))
    .use(cookieParser())
    .use(express.json());
 
-app.use(['/roastArtists', '/roastTracks'], cors(corsOptions));
+// app.use(['/roastArtists', '/roastTracks'], cors(corsOptions));
 
 app.get('/login', function(req, res) {
 
