@@ -15,8 +15,8 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var OpenAI = require('openai');
 var SpotifyWebApi = require('spotify-web-api-node');
-// var HttpsProxyAgent = require('https-proxy-agent');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+var HttpsProxyAgent = require('https-proxy-agent');
+// const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // import { HttpProxyAgent } from 'http-proxy-agent';
 
@@ -40,13 +40,13 @@ const FRONTEND_ROUTE =  "https://snobbify.onrender.com";
 // const redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 const redirect_uri = BACKEND_ROUTE + '/callback'; // Your redirect uri
 
-const apiProxy = createProxyMiddleware({ target: 'https://api.openai.com/v1/chat/completions', changeOrigin: true  });
+// const apiProxy = createProxyMiddleware({ target: 'https://api.openai.com/v1/chat/completions', changeOrigin: true  });
 
-// const openai = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY,
-//   httpAgent: new HttpsProxyAgent.HttpsProxyAgent(FRONTEND_ROUTE)});
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  httpAgent: new HttpsProxyAgent.HttpsProxyAgent("https://api.openai.com/v1/chat/completions")});
 
-const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
+// const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
 const generateRandomString = (length) => {
   return crypto
@@ -64,7 +64,7 @@ app.use(express.static(__dirname + '/public'))
    .use(cookieParser())
    .use(express.json());
 
-app.use(['/roastArtists', '/roastTracks'], apiProxy)
+// app.use(['/roastArtists', '/roastTracks'], apiProxy)
 
 app.get('/login', function(req, res) {
 
@@ -217,39 +217,39 @@ app.post('/roastTracks', async function(req, res) {
   // console.log("generateRoast:",topTracksStr);
   
   console.log("sending to chatGPT...")
-  // const completion = await openai.chat.completions.create({
-  //     messages: [
-  //         { role: "system", content: process.env.TRACKS_PROMPT },
-  //         { role: "user", content: topTracksStr}
-  //     ],
-  //     model: "gpt-3.5-turbo",
-  // });
-
-  let gptHeaders = new Headers({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY
+  const completion = await openai.chat.completions.create({
+      messages: [
+          { role: "system", content: process.env.TRACKS_PROMPT },
+          { role: "user", content: topTracksStr}
+      ],
+      model: "gpt-3.5-turbo",
   });
 
-  // manual fetch
-  const completion = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: headers,
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      messages: [
-        { role: "system", content: process.env.TRACKS_PROMPT },
-        { role: "user", content: topTracksStr}
-      ]
-    })
-  })
-  .then((completion) => {
-    res.send({
-      gpt_response: completion.choices[0]
-      // gpt_response: {"message" : { "content" : topTracksStr}}
-    })
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  })
+  // let gptHeaders = new Headers({
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY
+  // });
+
+  // // manual fetch
+  // const completion = await fetch("https://api.openai.com/v1/chat/completions", {
+  //   method: "POST",
+  //   headers: headers,
+  //   body: JSON.stringify({
+  //     model: "gpt-3.5-turbo",
+  //     messages: [
+  //       { role: "system", content: process.env.TRACKS_PROMPT },
+  //       { role: "user", content: topTracksStr}
+  //     ]
+  //   })
+  // })
+  // .then((completion) => {
+  //   res.send({
+  //     gpt_response: completion.choices[0]
+  //     // gpt_response: {"message" : { "content" : topTracksStr}}
+  //   })
+  // }, function(err) {
+  //   console.log('Something went wrong!', err);
+  // })
 
   console.log("finished!")
   console.log(completion.choices[0]);
