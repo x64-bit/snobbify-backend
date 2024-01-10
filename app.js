@@ -68,11 +68,11 @@ var corsOptions = function(req, res, next){
 }
 
 app.use(express.static(__dirname + '/public'))
-   .use(cors(corsOptions))
+   .use(cors())
    .use(cookieParser())
    .use(express.json());
 
-// app.use(['/roastArtists', '/roastTracks'], apiProxy)
+app.use(['/roastArtists', '/roastTracks'], cors(corsOptions));
 
 app.get('/login', function(req, res) {
 
