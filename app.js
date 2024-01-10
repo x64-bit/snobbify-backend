@@ -15,8 +15,8 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var OpenAI = require('openai');
 var SpotifyWebApi = require('spotify-web-api-node');
-// var HttpsProxyAgent = require('https-proxy-agent');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+var HttpsProxyAgent = require('https-proxy-agent');
+// const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // import { HttpProxyAgent } from 'http-proxy-agent';
 
@@ -40,7 +40,7 @@ const FRONTEND_ROUTE =  "https://snobbify.onrender.com";
 // const redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 const redirect_uri = BACKEND_ROUTE + '/callback'; // Your redirect uri
 
-const apiProxy = createProxyMiddleware({ target: 'https://api.openai.com/v1/chat/completions'});
+// const apiProxy = createProxyMiddleware({ target: 'https://api.openai.com/v1/chat/completions'});
 
 // const openai = new OpenAI({
 //   apiKey: process.env.OPENAI_API_KEY,
@@ -59,12 +59,20 @@ var stateKey = 'spotify_auth_state';
 
 var app = express();
 
+var corsOptions = function(req, res, next){ 
+  res.header('Access-Control-Allow-Origin', '*'); 
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 
+  'Content-Type, Authorization, Content-Length, X-Requested-With');
+   next();
+}
+
 app.use(express.static(__dirname + '/public'))
-   .use(cors())
+   .use(cors(corsOptions))
    .use(cookieParser())
    .use(express.json());
 
-app.use(['/roastArtists', '/roastTracks'], apiProxy)
+// app.use(['/roastArtists', '/roastTracks'], apiProxy)
 
 app.get('/login', function(req, res) {
 
