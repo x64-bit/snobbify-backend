@@ -233,58 +233,63 @@ app.post('/sample', async function(req, res) {
 // used a POST request because didn't want to expose artists in URL
 // and concerned about account data fiddling
 app.post('/roastTracks', async function(req, res) {
-  // TODO:  implement try/catch so server doesn't just crash lmfao
-  // console.log(req.body);
-  
-  let topTracks = req.body
-  let topTracksStr = JSON.stringify(topTracks);
-  // console.log("generateRoast, topArtists:", topTracks);
-  // console.log("generateRoast:",topTracksStr);
-  
-  console.log("sending to chatGPT...")
-  // const completion = await openai.chat.completions.create({
-  //     messages: [
-  //         { role: "system", content: process.env.TRACKS_PROMPT },
-  //         { role: "user", content: topTracksStr}
-  //     ],
-  //     model: "gpt-3.5-turbo",
-  // });
+  try {
+    // TODO:  implement try/catch so server doesn't just crash lmfao
+    // console.log(req.body);
+    
+    let { topTracks } = req.body
+    let topTracksStr = JSON.stringify(topTracks);
+    console.log("topTracks:", topTracks);
+    console.log("topTrackStr:",topTracksStr);
+    
+    console.log("sending to chatGPT...")
+    const completion = await openai.chat.completions.create({
+        messages: [
+            { role: "system", content: process.env.TRACKS_PROMPT },
+            { role: "user", content: topTracksStr}
+        ],
+        model: "gpt-3.5-turbo",
+    });
 
-  let gptHeaders = new Headers({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY
-  });
+    // let gptHeaders = new Headers({
+    //     'Content-Type': 'application/json',
+    //     'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY
+    // });
 
-  // manual fetch
-  const completion = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: headers,
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      messages: [
-        { role: "system", content: process.env.TRACKS_PROMPT },
-        { role: "user", content: topTracksStr}
-      ]
-    })
-  })
-  .then((completion) => {
+    // // manual fetch
+    // const completion = await fetch("https://api.openai.com/v1/chat/completions", {
+    //   method: "POST",
+    //   headers: headers,
+    //   body: JSON.stringify({
+    //     model: "gpt-3.5-turbo",
+    //     messages: [
+    //       { role: "system", content: process.env.TRACKS_PROMPT },
+    //       { role: "user", content: topTracksStr}
+    //     ]
+    //   })
+    // })
+    // .then((completion) => {
+    //   res.send({
+    //     gpt_response: completion.choices[0]
+    //     // gpt_response: {"message" : { "content" : topTracksStr}}
+    //   })
+    // }, function(err) {
+    //   console.log('Something went wrong!', err);
+    // })
+
+    console.log("finished!")
+    console.log(completion.choices[0]);
+
     res.send({
       gpt_response: completion.choices[0]
       // gpt_response: {"message" : { "content" : topTracksStr}}
     })
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  })
 
-  console.log("finished!")
-  console.log(completion.choices[0]);
-
-  // res.send({
-  //   gpt_response: completion.choices[0]
-  //   // gpt_response: {"message" : { "content" : topTracksStr}}
-  // })
-
-  // console.log("GPT response:", completion.choices[0]);
+    // console.log("GPT response:", completion.choices[0]);
+  } catch (error) {
+    console.log(error);
+  }
+  
 });
 
 /**
